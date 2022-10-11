@@ -151,6 +151,7 @@ class S3Storage(Storage):
         "AWS_S3_SIGNATURE_VERSION": "s3v4",
         "AWS_S3_FILE_OVERWRITE": False,
         "AWS_S3_USE_THREADS": True,
+        "AWS_S3_SKIP_URL_PARAMS": False
     }
 
     s3_settings_suffix = ""
@@ -450,7 +451,7 @@ class S3Storage(Storage):
             ExpiresIn=self.settings.AWS_S3_MAX_AGE_SECONDS,
         )
         # Strip off the query params if we're not interested in bucket auth.
-        if not self.settings.AWS_S3_BUCKET_AUTH:
+        if self.settings.AWS_S3_SKIP_URL_PARAMS or not self.settings.AWS_S3_BUCKET_AUTH:
             url = urlunsplit(urlsplit(url)[:3] + ("", "",))
         # All done!
         return url
